@@ -3,15 +3,14 @@ import Foundation
 import keccak
 
 extension Data {
-    var pointer: UnsafePointer<UInt8>! { return withUnsafeBytes { $0 } }
-    mutating func mutablePointer() -> UnsafeMutablePointer<UInt8>! {
-        return withUnsafeMutableBytes { $0 }
-    }
-    
-    /// - Returns: kaccak256 hash of data
+    /// - Returns: keccak256 hash of data
     public func keccak256() -> Data {
-        var data = Data(count: 32)
-        keccak_256(data.mutablePointer(), 32, pointer, count)
-        return data
+        var result = Data(count: 32)
+        result.withUnsafeMutableBytes { (outPtr: UnsafeMutablePointer<UInt8>) in
+            self.withUnsafeBytes { (inPtr: UnsafePointer<UInt8>) in
+                keccak_256(outPtr, 32, inPtr, self.count)
+            }
+        }
+        return result
     }
 }
