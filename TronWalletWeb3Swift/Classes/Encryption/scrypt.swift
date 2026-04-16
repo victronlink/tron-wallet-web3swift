@@ -8,9 +8,9 @@ public func scrypt(password: String, salt: Data, length: Int, N: Int, R: Int, P:
     let derivedKeyCount = derivedKey.count
     let passCount = passwordData.count
     let saltCount = salt.count
-    let status = passwordData.withUnsafeBytes { (passPtr: UnsafePointer<UInt8>) -> Int32 in
-        salt.withUnsafeBytes { (saltPtr: UnsafePointer<UInt8>) -> Int32 in
-            derivedKey.withUnsafeMutableBytes { (outPtr: UnsafeMutablePointer<UInt8>) -> Int32 in
+    let status = derivedKey.withUnsafeMutableBytes { (outPtr: UnsafeMutablePointer<UInt8>) -> Int32 in
+        passwordData.withUnsafeBytes { (passPtr: UnsafePointer<UInt8>) -> Int32 in
+            salt.withUnsafeBytes { (saltPtr: UnsafePointer<UInt8>) -> Int32 in
                 crypto_scrypt(passPtr, passCount, saltPtr, saltCount, UInt64(N), UInt32(R), UInt32(P), outPtr, derivedKeyCount)
             }
         }
