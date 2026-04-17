@@ -108,9 +108,6 @@ extension Web3Utils {
             guard stipped.count == 64 else { throw PublicKeyToAddressError.invalidPublicKeySize }
             let sha3 = stipped.keccak256()
             let addressData = sha3[12 ..< 32]
-            print("[W3Debug] pubkey64 hex: \(stipped.toHexString())")
-            print("[W3Debug] keccak256 hex: \(sha3.toHexString())")
-            print("[W3Debug] address20 hex: \(addressData.toHexString())")
             return addressData
         }
     }
@@ -223,11 +220,7 @@ extension Web3Utils {
         let sData = signature[32 ..< 64].bytes
         let vData = signature[64]
         let signatureData = try SECP256K1.marshalSignature(v: vData, r: rData, s: sData)
-        print("[W3Debug] marshalSig hex: \(signatureData.toHexString()), count: \(signatureData.count)")
-        print("[W3Debug] original sig hex: \(signature.toHexString())")
-        print("[W3Debug] marshalSig == original: \(signatureData == signature)")
         let publicKey = try SECP256K1.recoverPublicKey(hash: hash, signature: signatureData)
-        print("[W3Debug] recovered pubkey count: \(publicKey.count), hex: \(publicKey.toHexString())")
         return try Web3Utils.publicToAddress(publicKey)
     }
 
